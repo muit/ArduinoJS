@@ -1,0 +1,27 @@
+<html>
+	<head>
+		<script type="text/javascript">
+		function updater()
+		{
+			while(true)
+			{
+				for(int i = 0; i<4; i++)
+				{
+					var iframe = document.getElementById("val_"+i);
+					iframe.src = iframe.src;
+				}
+				sleep(1);
+			}
+		}
+		</script>
+	</head>
+	
+	<body onLoad="updater()">
+
+	Dato 1: <iframe id="val_0" src="http://172.16.1.100:8000"></iframe><br>
+	Dato 2: <iframe id="val_1" src="http://172.16.1.100:8001"></iframe><br>
+	Dato 3: <iframe id="val_2" src="http://172.16.1.100:8002"></iframe><br>
+	Dato 4: <iframe id="val_3" src="http://172.16.1.100:8003"></iframe><br>
+
+	</body>
+</html>
