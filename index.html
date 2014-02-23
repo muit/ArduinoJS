@@ -1,27 +1,25 @@
+<!DOCTYPE html>
 <html>
-	<head>
-		<script type="text/javascript">
-		function updater()
-		{
-			while(true)
-			{
-				for(int i = 0; i<4; i++)
-				{
-					var iframe = document.getElementById("val_"+i);
-					iframe.src = iframe.src;
-				}
-				sleep(1);
-			}
-		}
-		</script>
-	</head>
-	
-	<body onLoad="updater()">
+<head>
+  <link rel="stylesheet" type="text/css" href="Chat.css" />
+</head>
+<body>
 
-	Dato 1: <iframe id="val_0" src="http://172.16.1.100:8000"></iframe><br>
-	Dato 2: <iframe id="val_1" src="http://172.16.1.100:8001"></iframe><br>
-	Dato 3: <iframe id="val_2" src="http://172.16.1.100:8002"></iframe><br>
-	Dato 4: <iframe id="val_3" src="http://172.16.1.100:8003"></iframe><br>
+  <div id="container">
+      <section id="messages-container">
+          <div id="messages"></div>
+      </section>
+      <section id="users"></section>
+      
+      <div class="clear"></div>
 
-	</body>
+      <section id="msg-input">
+          <input name="message" size="50" type="text" placeholder="Mensaje..." />
+      </section>
+  </div>
+
+  <script type="text/javascript" src="http://localhost:8080/socket.io/socket.io.js"></script>
+  <script type="text/javascript" src="js/jquery-2.1.0.js"></script>
+  <script type="text/javascript" src="js/Chat.js"></script>
+</body>
 </html>
