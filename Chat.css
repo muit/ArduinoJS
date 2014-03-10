@@ -35,6 +35,26 @@
 }
 
 #msg-input input {
+  float: left;
+  border: 1px solid #CCC;
+  overflow: auto;
   width: 50%;
   height: 20px;
+}
+
+#conection-status {
+  color: #ff0000;
+  text-align: center;
+  float: left;
+  margin-left: 5px;
+  border: 1px solid #CCC;
+  overflow: auto;
+  margin-top: 0px;
+  width: 180px;
+  height: 20px;
+  background-color: #222222;
+}
+#content-end{
+  overflow: auto;
+  width: 100%;
 }
