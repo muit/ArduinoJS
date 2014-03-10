@@ -1,7 +1,10 @@
 $(function() {
-  var socket = io.connect("http://localhost:8080");
-
+  var socket = io.connect("http://192.168.0.137:14494");
+  
+  addLine("Conectando...");
+  
   socket.on("connect", function() {
+      setConection(true);
       socket.emit("nick", prompt("Nick?"));
   });
 
@@ -13,13 +16,21 @@ $(function() {
   });
 
   socket.on("msg", function(nick, msg) {
-      $(document.createElement("div"))
-      .html("<strong>" + nick + ": </strong>" + msg)
-      .appendTo("#messages");
-
-      $('#messages-container').scrollTop($('#messages').height());
+     addLine("<strong>[" + nick + "]: </strong>" + msg);
   });
-
+  
+  socket.on("report", function(msg) {
+     addLine("<strong>[Server]: </strong>" + msg);
+  });
+  
+  socket.on("action", function(actionName){
+    while(actionName == "repeatNick")
+    {
+      socket.emit("nick", prompt("Nick?"));
+    }
+    
+  });
+  
   socket.on("nicks", function(nicks) {
       $("#users").html('');
       for (var i = 0; i < nicks.length; i++) {
@@ -28,3 +39,23 @@ $(function() {
   });
 
 });
+  
+function addLine(msg)
+{
+  $(document.createElement("div"))
+  .html(msg)
+  .appendTo("#messages");
+
+  $('#messages-container').scrollTop($('#messages').height());
+}
+
+function setConection(state)
+{
+  if(state){
+    document.getElementById("conection-status").style.color = "#00ff00";
+    document.getElementById("conection-status").innerHTML = "Conectado.";
+  }else{
+    document.getElementById("conection-status").style.color = "#ff0000";
+    document.getElementById("conection-status").innerHTML = "Desconectado.";
+  }
+}

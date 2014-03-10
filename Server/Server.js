@@ -1,13 +1,27 @@
-var io = require("socket.io").listen(8080);
+console.log("*************\n*CHAT SERVER*\n*************\n*Muit Fos   *\n*************\n");
+var port = 14494;
+var io = require("socket.io").listen(port);
 var nicks = [];
 
-io.sockets.on("connection", function(socket) {
+io.set('log level', 1);
 
+console.log("\nEscuchando puerto "+ port);
+
+io.sockets.on("connection", function(socket) {
+  
   socket.on("nick", function(nick) {
+    console.log("[Server]: Entra "+nick);
+    if(nick==null)
+    {
+      socket.emit("report", "Recargue la pagina para comenzar de nuevo.");
+    }
+    else if(nicks.indexOf(nick)==-1)
+    {
       nicks.push(nick);
       io.sockets.emit("nicks", nicks);
 
       socket.on("msg", function(msg) {
+	  console.log("["+nick+"]: "+msg);
           io.sockets.emit("msg", nick, msg);
       });
 	  
@@ -15,42 +29,13 @@ io.sockets.on("connection", function(socket) {
           nicks.splice(nicks.indexOf(nick), 1);
           io.sockets.emit("nicks", nicks);
       });
+    }
+    else
+    {
+      console.log("Sale: "+nick+"  *Nick repetido.");
+      socket.emit("report", "Ese nick ya existe");
+      socket.emit("action", "repeatNick");
+    }
+    
   });
 });
-
-
-
-
-function arduinoConect()
-{
-	//Conexión
-	//devuelve true si es una conexion exitosa
-}
-function arduinoDisconect()
-{
-	//Desconexion
-}
-function arduinoPing()
-{
-	//devuelve estado de la conexion si es necesario.
-	//true conectado - false desconectado
-}
-function setValue(int id, int value)
-{
-	//Set de datos a arduino 
-}
-function getValue(int id)
-{
-	if(conect)
-	{
-		//Obtencion de datos de arduino
-		//dependiendo del id ingresado
-		//return *****
-		console.log("Dato("+id+") proporcionado.");
-		return "null"
-	}
-	else
-	{
-		return "null"
-	}
-}

@@ -15,7 +15,8 @@
 }
 
 #users {
-  background-color:#333333;
+  background-color:#A00000;
+  /*
   opacity:0.3;
   filter:alpha(opacity=30); /* For IE8 and earlier */
   float: left;
@@ -24,6 +25,8 @@
   overflow: auto;
   height: 300px;
   width: 180px;
+  color:#ffffff;
+  font-weight: bold;
 }
 
 .clear {
