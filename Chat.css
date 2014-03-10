@@ -1,23 +1,29 @@
 #container {
+  background-color:#ff0000;
   margin: 10px 0px 0px 10px;
   padding: 10px;
 }
 
 #messages-container {
+  background-color:#333333;
   float: left;
   border: 1px solid #CCCCCC;
-  width: 800px;
+  width: 50%;
   height: 300px;
   overflow: auto;
+  color:#ffffff;
 }
 
 #users {
+  background-color:#333333;
+  opacity:0.3;
+  filter:alpha(opacity=30); /* For IE8 and earlier */
   float: left;
-  margin-left: 10px;
+  margin-left: 5px;
   border: 1px solid #CCC;
   overflow: auto;
   height: 300px;
-  width: 200px;
+  width: 180px;
 }
 
 .clear {
@@ -25,10 +31,10 @@
 }
 
 #msg-input {
-  margin-top: 20px;
+  margin-top: 5px;
 }
 
 #msg-input input {
-  width: 800px;
-  height: 30px;
+  width: 50%;
+  height: 20px;
 }
