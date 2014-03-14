@@ -1,5 +1,5 @@
 $(function() {
-  var socket = io.connect("http://192.168.0.137:14494");
+  var socket = io.connect("http://172.16.1.9:14494");
   
   addLine("Conectando...");
   
@@ -28,7 +28,6 @@ $(function() {
     {
       socket.emit("nick", prompt("Nick?"));
     }
-    
   });
   
   socket.on("nicks", function(nicks) {
