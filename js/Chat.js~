@@ -1,8 +1,5 @@
-var crypto = require("crypto");
-
 $(function() {
-	
-	var host = "http://172.16.1.9";
+	var host = "http://localhost";
 	var port = 14494;
 	var nick;
 	
@@ -22,17 +19,17 @@ $(function() {
 
 	$('#msg-input input').keypress(function(e) {
 		if (e.which == 13) {
-			socket.emit("msg", encript($(this).val()));
+			socket.emit("msg", $(this).val());
 			$(this).val('');
 		}
 	});
 
 	socket.on("msg", function(nick, msg) {
-		addLine("<strong>[" + nick + "]: </strong>" + decript(msg));
+		addLine("<strong>[" + nick + "]: </strong>" + msg);
 	});
 
 	socket.on("report", function(msg) {
-		addLine("<strong>[Server]: </strong>" + decript(msg));
+		addLine("<strong>[Server]: </strong>" + msg);
 	});
 
 	socket.on("action", function(actionName){
@@ -78,8 +75,8 @@ function setConection(state)
     document.getElementById("conection-status").innerHTML = "Desconectado.";
   }
 }
-/*
-function showChat(state)
+
+function showChat(var state)
 {
 	if(state==true)
 	{
@@ -90,7 +87,7 @@ function showChat(state)
 		getID("login").style.display="none";
 	}
 }
-function showLogin(state)
+function showLogin(var state)
 {
 	if(state==true)
 	{
@@ -101,7 +98,7 @@ function showLogin(state)
 		getID("container").style.display="none";
 	}
 }
-function changeGUI(state)
+function changeGUI(var state)
 {
 	if(state==true)
 	{
@@ -114,17 +111,7 @@ function changeGUI(state)
 		showChat(true);
 	}
 }
-*/
-function getID(id)
+function getID(var id)
 {
-	return document.getElementById(id);
-}
-function encript(text)
-{
-	return crypto.createHash('md5').update(text).digest('hex');
-}
-
-function decript(cypth)
-{
-	return crypto.createDecipher('md5').update(cypth).toString("binary");
+	return document.getElementById(id)
 }

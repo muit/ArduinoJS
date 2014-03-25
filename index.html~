@@ -9,14 +9,16 @@
 <body>
 	<div id="header"></div>
 	
-	<div style="display: none;" id="login">
+	<div style="display: block;" id="login">
 		<div>User:</div>
-		<input type="text" name="name"></input>
+		<input type="text" name="name">
 		<div>Contraseña:</div>
-		<input type="password" name="password"></input>
+		<input type="password" name="password">
+		<br>
+		<input type="button" value="Slug in" onClick="changeGUI(false)">
 	</div>
 	
-	<div style="display: block;" id="container">
+	<div style="display: none;" id="container">
 		<section id="messages-container">
 		    <div id="messages"></div>
 		</section>
