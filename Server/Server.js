@@ -3,6 +3,7 @@ var port = 14494;
 var io = require("socket.io").listen(port);
 var crypto = require('crypto');
 var nicks = [];
+var adminPass = "miguel";
 
 io.set('log level', 1);
 
@@ -17,14 +18,47 @@ io.sockets.on("connection", function(socket) {
     }
     else if(nicks.indexOf(nick)==-1)
     {
-	  console.log("** '"+nick+"' se ha conectado.");
+	   console.log("** '"+nick+"' se ha conectado.");
       nicks.push(nick);
       io.sockets.emit("nicks", nicks);
 
       socket.on("msg", function(msg) {
-		  var digital = new Date();
-		  console.log("["+digital.getHours()+":"+digital.getMinutes()+":"+digital.getSeconds()+"] '"+nick+"': "+decript(msg));
-		  io.sockets.emit("msg", nick, msg);
+      	deCriptMsg = decript(msg);
+      	if(deCriptMsg.charAt(0) != "/")
+      	{
+		   	var digital = new Date();
+		   	console.log("["+digital.getHours()+":"+digital.getMinutes()+":"+digital.getSeconds()+"] '"+nick+"': "+decript(msg));
+		   	io.sockets.emit("msg", nick, msg);
+		   }
+			else
+			{
+				msg = deCriptMsg.substr(1);
+				var msgArgument = msg.split(" ");
+				switch(msgArgument[0])
+				{
+					case "restart":
+						if(msgArgument[1] == null)
+							socket.emit("report", "Faltan argumentos.");
+							
+						if(msgArgument[1] == adminPass)
+							io.sockets.emit("report", "Reiniciando Servidor.");
+						else
+							socket.emit("report", "Contraseña Incorrecta.");
+						break;
+					case "adminmsg":
+						if(msgArgument[1]== null || msgArgument[2] == null)
+							socket.emit("report", "Faltan argumentos.");
+							
+						if(msgArgument[1] == adminPass)
+							io.sockets.emit("adminMsg", nick, msgArgument[2]);
+						else
+							socket.emit("report", "Contraseña Incorrecta.");
+						break;
+					default:
+						socket.emit("report", "Ese comando no existe.");
+						break;	
+				}		
+			}
       });
 	  
       socket.on("disconnect", function() {

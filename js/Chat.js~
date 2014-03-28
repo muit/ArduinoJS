@@ -28,9 +28,6 @@ $(function() {
 	socket.on("msg", function(nick, msg) {
 		addLine("<strong>[" + nick + "]: </strong>" + decript(msg));
 	});
-	socket.on("adminMsg", function(nick, msg) {
-		addLine("<strong>[Admin:" + nick + "]: </strong>" + msg);
-	});
 
 	socket.on("report", function(msg) {
 		addLine("<strong>[Server]: </strong>" + decript(msg));

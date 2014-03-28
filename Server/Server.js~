@@ -1,125 +1,80 @@
-$(function() {
-	
-	var host = "http://172.16.1.9";
-	var port = 14494;
-	var nick;
-	
-	var socket = io.connect(host+":"+port);
+console.log("*************\n*CHAT SERVER*\n*************\n*Muit Fos   *\n*************\n");
+var port = 14494;
+var io = require("socket.io").listen(port);
+var crypto = require('crypto');
+var nicks = [];
+var adminPass = "miguel";
+
+io.set('log level', 1);
+
+console.log("\nEscuchando puerto "+ port);
+
+io.sockets.on("connection", function(socket) {
   
-	addLine("Conectando a "+ host+":"+port +"...");
-  
-	socket.on("connect", function() {
-		setConection(true);
-		addEnter();
-		addLine("Esperando nick...");
-		nick = prompt("Nick?");
-		socket.emit("nick", nick);
-		addLine(nick);
-		addLine("...");
-	});
+  socket.on("nick", function(nick) {
+    if(nick==null)
+    {
+      socket.emit("report", "Recargue la pagina para comenzar de nuevo.");
+    }
+    else if(nicks.indexOf(nick)==-1)
+    {
+	   console.log("** '"+nick+"' se ha conectado.");
+      nicks.push(nick);
+      io.sockets.emit("nicks", nicks);
 
-	$('#msg-input input').keypress(function(e) {
-		if (e.which == 13) {
-			socket.emit("msg", encript($(this).val()));
-			$(this).val('');
-		}
-	});
-
-	socket.on("msg", function(nick, msg) {
-		addLine("<strong>[" + nick + "]: </strong>" + decript(msg));
-	});
-	socket.on("adminMsg", function(nick, msg) {
-		addLine("<strong>[Admin:" + nick + "]: </strong>" + msg);
-	});
-
-	socket.on("report", function(msg) {
-		addLine("<strong>[Server]: </strong>" + decript(msg));
-	});
-
-	socket.on("action", function(actionName){
-		while(actionName == "repeatNick")
-		{
-			socket.emit("nick", prompt("Nick?"));
-		}
-	});
-
-	socket.on("nicks", function(nicks) {
-		$("#users").html('');
-		for (var i = 0; i < nicks.length; i++) {
-			$(document.createElement("li")).text(nicks[i]).appendTo("#users");
-		}
-	});
-
+      socket.on("msg", function(msg) {
+      	deCriptMsg = decript(msg);
+      	if(deCriptMsg.charAt(0) != "/")
+      	{
+		   	var digital = new Date();
+		   	console.log("["+digital.getHours()+":"+digital.getMinutes()+":"+digital.getSeconds()+"] '"+nick+"': "+decript(msg));
+		   	io.sockets.emit("msg", nick, msg);
+		   }
+			else
+			{
+				msg = deCriptMsg.substr(1);
+				var msgArgument = msg.split(' ');
+				switch(msgArgument[0])
+				{
+					case "restart":
+						if(msgArgument[1]== null)
+							socket.emit("report", "Faltan argumentos.");
+							
+						if(msgArgument[1] == adminPass)
+							io.sockets.emit("report", "Reiniciando Servidor.");
+						else
+							socket.emit("report", "Contraseña Incorrecta.");
+						break;
+					case "adminMsg":
+						if(msgArgument[1]== null || msgArgument[2] == null)
+							socket.emit("report", "Faltan argumentos.");
+							
+						if(msgArgument[1] == adminPass)
+							io.sockets.emit("adminMsg", nick, msgArgument[2]);
+						else
+							socket.emit("report", "Contraseña Incorrecta.");
+						break;
+					default:
+						socket.emit("report", "Ese comando no existe.");
+						break;	
+				}		
+			}
+      });
+	  
+      socket.on("disconnect", function() {
+	      console.log("** '"+nick+"' se ha desconectado.");
+          nicks.splice(nicks.indexOf(nick), 1);
+          io.sockets.emit("nicks", nicks);
+      });
+    }
+    else
+    {
+      console.log("** '"+nick+"' ya existe. Usuario Rechazado.");
+      socket.emit("report", "Ese nick ya existe");
+      socket.emit("action", "repeatNick");
+    }
+  });
 });
-  
-function addLine(msg)
-{
-  $(document.createElement("div"))
-  .html(msg)
-  .appendTo("#messages");
-
-  $('#messages-container').scrollTop($('#messages').height());
-}
-function addEnter()
-{
-  $(document.createElement("br"))
-  .html("")
-  .appendTo("#messages");
-
-  $('#messages-container').scrollTop($('#messages').height());
-}
-
-function setConection(state)
-{
-  if(state){
-    document.getElementById("conection-status").style.color = "#00ff00";
-    document.getElementById("conection-status").innerHTML = "Conectado.";
-  }else{
-    document.getElementById("conection-status").style.color = "#ff0000";
-    document.getElementById("conection-status").innerHTML = "Desconectado.";
-  }
-}
-
-function showChat(state)
-{
-	if(state==true)
-	{
-		getID("login").style.display="block";
-	}
-	else
-	{
-		getID("login").style.display="none";
-	}
-}
-function showLogin(state)
-{
-	if(state==true)
-	{
-		getID("container").style.display="block";
-	}
-	else
-	{
-		getID("container").style.display="none";
-	}
-}
-function changeGUI(state)
-{
-	if(state==true)
-	{
-		showLogin(true);
-		showChat(false);
-	}
-	else
-	{
-		showLogin(false);
-		showChat(true);
-	}
-}
-
-function getID(id)
-{
-	return document.getElementById(id);
-}
 
 function encript(text)
 {
@@ -168,6 +123,3 @@ l=e>>>16;c[a]=((k*k>>>17)+k*l>>>15)+l*l^((e&4294901760)*e|0)+((e&65535)*e|0)}b[0
 e.extend({_doReset:function(){for(var b=this._key.words,c=this.cfg.iv,a=0;4>a;a++)b[a]=(b[a]<<8|b[a]>>>24)&16711935|(b[a]<<24|b[a]>>>8)&4278255360;for(var e=this._X=[b[0],b[3]<<16|b[2]>>>16,b[1],b[0]<<16|b[3]>>>16,b[2],b[1]<<16|b[0]>>>16,b[3],b[2]<<16|b[1]>>>16],b=this._C=[b[2]<<16|b[2]>>>16,b[0]&4294901760|b[1]&65535,b[3]<<16|b[3]>>>16,b[1]&4294901760|b[2]&65535,b[0]<<16|b[0]>>>16,b[2]&4294901760|b[3]&65535,b[1]<<16|b[1]>>>16,b[3]&4294901760|b[0]&65535],a=this._b=0;4>a;a++)q.call(this);for(a=0;8>
 a;a++)b[a]^=e[a+4&7];if(c){var a=c.words,c=a[0],a=a[1],c=(c<<8|c>>>24)&16711935|(c<<24|c>>>8)&4278255360,a=(a<<8|a>>>24)&16711935|(a<<24|a>>>8)&4278255360,e=c>>>16|a&4294901760,k=a<<16|c&65535;b[0]^=c;b[1]^=e;b[2]^=a;b[3]^=k;b[4]^=c;b[5]^=e;b[6]^=a;b[7]^=k;for(a=0;4>a;a++)q.call(this)}},_doProcessBlock:function(b,c){var a=this._X;q.call(this);l[0]=a[0]^a[5]>>>16^a[3]<<16;l[1]=a[2]^a[7]>>>16^a[5]<<16;l[2]=a[4]^a[1]>>>16^a[7]<<16;l[3]=a[6]^a[3]>>>16^a[1]<<16;for(a=0;4>a;a++)l[a]=(l[a]<<8|l[a]>>>24)&
 16711935|(l[a]<<24|l[a]>>>8)&4278255360,b[c+a]^=l[a]},blockSize:4,ivSize:2});k.Rabbit=e._createHelper(s)})();
-
-
-
