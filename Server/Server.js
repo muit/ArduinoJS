@@ -48,11 +48,15 @@ io.sockets.on("connection", function(socket) {
 			case "adminmsg":
 				if(msgArgument[1]== null || msgArgument[2] == null)
 					socket.emit("report", "Faltan argumentos.");
-							
-				if(msgArgument[1] == adminPass)
+				else if(msgArgument[1] == adminPass)
 					io.sockets.emit("adminMsg", nick, msgArgument[2]);
 				else
 					socket.emit("report", "Contraseña Incorrecta.");
+				break;
+			case "kick":
+				if(msgArgument[1]== null)
+					break;
+				kick(msgArgument[1]);
 				break;
 			default:
 				socket.emit("report", "Ese comando no existe.");
@@ -85,6 +89,14 @@ function decript(cypth)
 {
     return (CryptoJS.Rabbit.decrypt(cypth, "hUY76gsd34UY")).toString(CryptoJS.enc.Utf8);
 }
+
+function kick(name)
+{
+	for(int i=0; i<io.sockets.size(); i++)
+		if(nicks[i]==name)
+			io.sockets.get(i).disconect();
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 /*
