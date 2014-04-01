@@ -20,16 +20,15 @@ $(function() {
 
 	$('#msg-input input').keypress(function(e) {
 		if (e.which == 13) {
-			socket.emit("msg", encript($(this).val()));
+			var msg = $(this).val().toString();
+			if( msg != '' && msg != ' ')
+				socket.emit("msg", encript($(this).val()));
 			$(this).val('');
 		}
 	});
 
 	socket.on("msg", function(nick, msg) {
 		addLine("<strong>[" + nick + "]: </strong>" + decript(msg));
-	});
-	socket.on("adminMsg", function(nick, msg) {
-		addLine("<strong>[Admin:" + nick + "]: </strong>" + msg);
 	});
 
 	socket.on("report", function(msg) {

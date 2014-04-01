@@ -30,35 +30,35 @@ io.sockets.on("connection", function(socket) {
 		   	console.log("["+digital.getHours()+":"+digital.getMinutes()+":"+digital.getSeconds()+"] '"+nick+"': "+decript(msg));
 		   	io.sockets.emit("msg", nick, msg);
 		   }
-			else
+		else
+		{
+			msg = deCriptMsg.substr(1);
+			var msgArgument = msg.split(" ");
+			switch(msgArgument[0])
 			{
-				msg = deCriptMsg.substr(1);
-				var msgArgument = msg.split(" ");
-				switch(msgArgument[0])
-				{
-					case "restart":
-						if(msgArgument[1] == null)
-							socket.emit("report", "Faltan argumentos.");
+			case "restart":
+				if(msgArgument[1] == null)
+					socket.emit("report", "Faltan argumentos.");
 							
-						if(msgArgument[1] == adminPass)
-							io.sockets.emit("report", "Reiniciando Servidor.");
-						else
-							socket.emit("report", "Contraseña Incorrecta.");
-						break;
-					case "adminmsg":
-						if(msgArgument[1]== null || msgArgument[2] == null)
-							socket.emit("report", "Faltan argumentos.");
+				if(msgArgument[1] == adminPass)
+					io.sockets.emit("report", "Reiniciando Servidor.");
+				else
+					socket.emit("report", "Contraseña Incorrecta.");
+				break;
+			case "adminmsg":
+				if(msgArgument[1]== null || msgArgument[2] == null)
+					socket.emit("report", "Faltan argumentos.");
 							
-						if(msgArgument[1] == adminPass)
-							io.sockets.emit("adminMsg", nick, msgArgument[2]);
-						else
-							socket.emit("report", "Contraseña Incorrecta.");
-						break;
-					default:
-						socket.emit("report", "Ese comando no existe.");
-						break;	
-				}		
-			}
+				if(msgArgument[1] == adminPass)
+					io.sockets.emit("adminMsg", nick, msgArgument[2]);
+				else
+					socket.emit("report", "Contraseña Incorrecta.");
+				break;
+			default:
+				socket.emit("report", "Ese comando no existe.");
+				break;	
+			}		
+		}
       });
 	  
       socket.on("disconnect", function() {
