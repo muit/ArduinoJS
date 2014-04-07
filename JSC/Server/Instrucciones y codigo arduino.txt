@@ -1,0 +1,27 @@
+Para ejecutar el servidor de debe abrir el ejecutable correspondiente a su sistema.
+
+Este servidor es lo equivalente a un blink pero enviado por serial.
+
+El codigo Arduino para esta version de servidor es:
+=====================================================================
+const int LED = 13; //LED connected to digital pin 13
+int inByte = 0;
+ 
+void setup(){
+    Serial.begin(9600); //Open the serial port
+    pinMode(LED, OUTPUT); //Set the digital pin as output
+}
+ 
+void loop(){
+ 
+    if(Serial.available() > 0){
+ 
+        inByte = Serial.read(); //read the incoming byte
+ 
+        if(inByte == '1')
+            digitalWrite(LED, HIGH); //turn the LED on
+        else
+            digitalWrite(LED, LOW); //turn the LED off
+    }
+}
+=====================================================================
