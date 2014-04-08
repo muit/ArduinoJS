@@ -22,11 +22,6 @@ function connect()
 		conn.onerror = function(evt) { onError(evt) };
 		getId("connection_state").innerHTML = "<h4 class='alert_success'>CONECTADO</h4>";
 		conn.send("ping");
-		
-		var errorMsg = getId("connection_error");
-		errorMsg.innerHTML = "";
-		errorMsg.style.display = "none";		
-		
 	}
 }
 function disconnect()
