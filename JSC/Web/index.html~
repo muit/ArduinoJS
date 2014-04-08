@@ -119,7 +119,7 @@
 				<table class="tablesorter" cellspacing="0">
 					<thead>
 						<tr>
-							<th></th>
+							<th>input/output</th>
 							<th>Id</th>
 							<th>Estado</th>
 							<th>Modificar</th>				
@@ -131,9 +131,158 @@
 								<input type="checkBox">							
 							</td>	
 							<td>
-								<div id="pin"					
+								Pin 0
+							</td>	
+							<td>
+								<div id="pin_0_state"></div>						
+							</td>				
+						</tr>	
+						<tr>
+							<td>
+								<input type="checkBox">							
+							</td>	
+							<td>
+								Pin 1
+							</td>	
+							<td>
+								<div id="pin_1_state"></div>						
 							</td>					
-						</tr>			
+						</tr>	
+						<tr>
+							<td>
+								<input type="checkBox">							
+							</td>	
+							<td>
+								Pin 2
+							</td>		
+							<td>
+								<div id="pin_2_state"></div>						
+							</td>				
+						</tr>	
+						<tr>
+							<td>
+								<input type="checkBox">							
+							</td>	
+							<td>
+								Pin 3
+							</td>		
+							<td>
+								<div id="pin_3_state"></div>						
+							</td>				
+						</tr>	
+						<tr>
+							<td>
+								<input type="checkBox">							
+							</td>	
+							<td>
+								Pin 4
+							</td>		
+							<td>
+								<div id="pin_4_state"></div>						
+							</td>				
+						</tr>	
+						<tr>
+							<td>
+								<input type="checkBox">							
+							</td>	
+							<td>
+								Pin 5
+							</td>	
+							<td>
+								<div id="pin_5_state"></div>						
+							</td>					
+						</tr>	
+						<tr>
+							<td>
+								<input type="checkBox">							
+							</td>	
+							<td>
+								Pin 6
+							</td>	
+							<td>
+								<div id="pin_6_state"></div>						
+							</td>					
+						</tr>	
+						<tr>
+							<td>
+								<input type="checkBox">							
+							</td>	
+							<td>
+								Pin 7
+							</td>	
+							<td>
+								<div id="pin_7_state"></div>						
+							</td>					
+						</tr>
+						<tr>
+							<td>
+								<input type="checkBox">							
+							</td>	
+							<td>
+								Pin 8
+							</td>		
+							<td>
+								<div id="pin_8_state"></div>						
+							</td>				
+						</tr>	
+						<tr>
+							<td>
+								<input type="checkBox">							
+							</td>	
+							<td>
+								Pin 9
+							</td>	
+							<td>
+								<div id="pin_9_state"></div>						
+							</td>					
+						</tr>	
+						<tr>
+							<td>
+								<input type="checkBox">							
+							</td>	
+							<td>
+								Pin 10
+							</td>			
+							<td>
+								<div id="pin_10_state"></div>						
+							</td>			
+						</tr>	
+						<tr>
+							<td>
+								<input type="checkBox">							
+							</td>	
+							<td>
+								Pin 11
+							</td>		
+							<td>
+								<div id="pin_11_state"></div>						
+							</td>				
+						</tr>	
+						<tr>
+							<td>
+								<input type="checkBox">							
+							</td>	
+							<td>
+								Pin 12
+							</td>	
+							<td>
+								<div id="pin_12_state"></div>						
+							</td>					
+						</tr>	
+						<tr>
+							<td>
+								<input type="checkBox">							
+							</td>	
+							<td>
+								Pin 13
+							</td>		
+							<td>
+								<div id="pin_13_state"></div>						
+							</td>	
+							<td>
+								<input type="submit" value="Cambiar" class="alt_btn" style="width: 50%;" onClick="">
+							</td>	
+						</tr>	
 					</tbody>
 				</table>
 				<div class="clear"></div>

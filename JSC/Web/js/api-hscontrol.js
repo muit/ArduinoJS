@@ -21,7 +21,7 @@ function connect()
 		conn.onmessage = function(evt) { onMessage(evt) }; 
 		conn.onerror = function(evt) { onError(evt) };
 		getId("connection_state").innerHTML = "<h4 class='alert_success'>CONECTADO</h4>";
-		conn.send("ping");
+		
 		
 		var errorMsg = getId("connection_error");
 		errorMsg.innerHTML = "";
@@ -37,24 +37,26 @@ function disconnect()
 }
 
 function onOpen(evt) { 
-	if(conn != null)
-	{
-		
-	}
+	conn.send("ping");
 }  
 function onClose(evt) { 
 	if(conn != null)
-	{
 		disconnect();
-	}
 }  
 function onMessage(evt) { 
-	alert(evt.data);
+	alert(""+evt.data);
 }  
 function onError(evt) {
 	connectionError("Socket obtuvo Error. Es posible que la direccion sea incorrecta.");
 }
 
+function ping()
+{
+	if(conn != null)
+		conn.send("ping");
+	else 
+		connectionError("Conecte al servidor primero.");
+}
 
 
 function connectionError(msg)
@@ -70,7 +72,19 @@ function hideConnectionError()
 	errorMsg.style.display = "none";
 }
 
+function setDigital(id, state)
+{
+	conn.send("set digital "+id+" "+state);
+}
+
 function getId(id)
 {
 	return document.getElementById(id);
+}
+
+//EVENTS/////////////////////////////////////
+
+function onChangeValue(id, state)
+{
+	
 }
