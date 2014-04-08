@@ -92,7 +92,7 @@ function decript(cypth)
 
 function kick(name)
 {
-	for(int i=0; i<io.sockets.size(); i++)
+	for(var i=0; i<io.sockets.size(); i++)
 		if(nicks[i]==name)
 			io.sockets.get(i).disconect();
 }
