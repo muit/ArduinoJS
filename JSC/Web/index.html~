@@ -15,6 +15,7 @@
 	<script src="js/jquery-1.5.2.min.js" type="text/javascript"></script>
 	<script src="js/hideshow.js" type="text/javascript"></script>
 	<script src="js/jquery.tablesorter.min.js" type="text/javascript"></script>
+	<script src="js/socket.io.js" type="text/javascript"></script>
 	<script src="js/api-hscontrol.js" type="text/javascript"></script>
 	<script type="text/javascript" src="js/jquery.equalHeight.js"></script>
 	<script type="text/javascript">
@@ -43,7 +44,7 @@
 		});
 	</script>
 </head>
-<body>
+<body onLoad="load();">
 
 	<header id="header">
 		<hgroup>
@@ -62,8 +63,8 @@
 		<ul class="toggle">
 			<li class="icn_edit_article"><a href="#connection">Connection</a></li>
 			<li class="icn_tags"><a href="#ping">Ping</a></li>
-			<li class="icn_categories"><a href="#pins">Pin States</a></li>
-			<li class="icn_tags"><a href="#">Wheel Speed</a></li>
+			<li class="icn_categories"><a href="#digital_pins">Digital Pin States</a></li>
+			<li class="icn_tags"><a href="#analog_pins">Analog Pin States</a></li>
 		</ul>
 		
 		<footer>
@@ -112,9 +113,9 @@
 				</div>
 		</article><div class="clear"></div>
 		
-		<a name="pins"></a>
+		<a name="digital_pins"></a>
 		<article class="module width_full">
-			<header><h3>Pin states</h3></header>
+			<header><h3>Digital Pin states</h3></header>
 				<div class="module_content">
 				<table class="tablesorter" cellspacing="0">
 					<thead>
@@ -128,165 +129,268 @@
 					<tbody>
 						<tr>
 							<td>
-								<input type="checkBox">							
+								<div id="inOut_0"></div>							
 							</td>	
 							<td>
 								Pin 0
 							</td>	
 							<td>
 								<div id="pin_0_state"></div>						
+							</td>	
+							<td>
+								<input id="pin_0_btn" type="submit" value="Cambiar" class="alt_btn" style="width: 50%;" onClick="invertValue(0)">
 							</td>				
 						</tr>	
 						<tr>
 							<td>
-								<input type="checkBox">							
+								<div id="inOut_1"></div>							
 							</td>	
 							<td>
 								Pin 1
 							</td>	
 							<td>
 								<div id="pin_1_state"></div>						
+							</td>	
+							<td>
+								<input id="pin_1_btn" type="submit" value="Cambiar" class="alt_btn" style="width: 50%;" onClick="invertValue(1)">
 							</td>					
 						</tr>	
 						<tr>
 							<td>
-								<input type="checkBox">							
+								<div id="inOut_2"></div>							
 							</td>	
 							<td>
 								Pin 2
 							</td>		
 							<td>
 								<div id="pin_2_state"></div>						
+							</td>	
+							<td>
+								<input id="pin_2_btn" type="submit" value="Cambiar" class="alt_btn" style="width: 50%;" onClick="invertValue(2)">
 							</td>				
 						</tr>	
 						<tr>
 							<td>
-								<input type="checkBox">							
+								<div id="inOut_3"></div>							
 							</td>	
 							<td>
 								Pin 3
 							</td>		
 							<td>
 								<div id="pin_3_state"></div>						
-							</td>				
+							</td>		
+							<td>
+								<input id="pin_3_btn" type="submit" value="Cambiar" class="alt_btn" style="width: 50%;" onClick="invertValue(3)">
+							</td>			
 						</tr>	
 						<tr>
 							<td>
-								<input type="checkBox">							
+								<div id="inOut_4"></div>							
 							</td>	
 							<td>
 								Pin 4
 							</td>		
 							<td>
 								<div id="pin_4_state"></div>						
-							</td>				
+							</td>		
+							<td>
+								<input id="pin_4_btn" type="submit" value="Cambiar" class="alt_btn" style="width: 50%;" onClick="invertValue(4)">
+							</td>			
 						</tr>	
 						<tr>
 							<td>
-								<input type="checkBox">							
+								<div id="inOut_5"></div>							
 							</td>	
 							<td>
 								Pin 5
 							</td>	
 							<td>
 								<div id="pin_5_state"></div>						
-							</td>					
+							</td>		
+							<td>
+								<input id="pin_5_btn" type="submit" value="Cambiar" class="alt_btn" style="width: 50%;" onClick="invertValue(5)">
+							</td>				
 						</tr>	
 						<tr>
 							<td>
-								<input type="checkBox">							
+								<div id="inOut_6"></div>							
 							</td>	
 							<td>
 								Pin 6
 							</td>	
 							<td>
 								<div id="pin_6_state"></div>						
-							</td>					
+							</td>		
+							<td>
+								<input id="pin_6_btn" type="submit" value="Cambiar" class="alt_btn" style="width: 50%;" onClick="invertValue(6)">
+							</td>				
 						</tr>	
 						<tr>
 							<td>
-								<input type="checkBox">							
+								<div id="inOut_7"></div>							
 							</td>	
 							<td>
 								Pin 7
 							</td>	
 							<td>
 								<div id="pin_7_state"></div>						
+							</td>	
+							<td>
+								<input id="pin_7_btn" type="submit" value="Cambiar" class="alt_btn" style="width: 50%;" onClick="invertValue(7)">
 							</td>					
 						</tr>
 						<tr>
 							<td>
-								<input type="checkBox">							
+								<div id="inOut_8"></div>							
 							</td>	
 							<td>
 								Pin 8
 							</td>		
 							<td>
 								<div id="pin_8_state"></div>						
+							</td>	
+							<td>
+								<input id="pin_8_btn" type="submit" value="Cambiar" class="alt_btn" style="width: 50%;" onClick="invertValue(8)">
 							</td>				
 						</tr>	
 						<tr>
 							<td>
-								<input type="checkBox">							
+								<div id="inOut_9"></div>							
 							</td>	
 							<td>
 								Pin 9
 							</td>	
 							<td>
 								<div id="pin_9_state"></div>						
-							</td>					
+							</td>		
+							<td>
+								<input id="pin_9_btn" type="submit" value="Cambiar" class="alt_btn" style="width: 50%;" onClick="invertValue(9)">
+							</td>				
 						</tr>	
 						<tr>
 							<td>
-								<input type="checkBox">							
+								<div id="inOut_10"></div>							
 							</td>	
 							<td>
 								Pin 10
 							</td>			
 							<td>
 								<div id="pin_10_state"></div>						
-							</td>			
+							</td>		
+							<td>
+								<input id="pin_10_btn" type="submit" value="Cambiar" class="alt_btn" style="width: 50%;" onClick="invertValue(10)">
+							</td>		
 						</tr>	
 						<tr>
 							<td>
-								<input type="checkBox">							
+								<div id="inOut_11"></div>							
 							</td>	
 							<td>
 								Pin 11
 							</td>		
 							<td>
 								<div id="pin_11_state"></div>						
+							</td>	
+							<td>
+								<input id="pin_11_btn" type="submit" value="Cambiar" class="alt_btn" style="width: 50%;" onClick="invertValue(11)">
 							</td>				
 						</tr>	
 						<tr>
 							<td>
-								<input type="checkBox">							
+								<div id="inOut_12"></div>							
 							</td>	
 							<td>
 								Pin 12
 							</td>	
 							<td>
 								<div id="pin_12_state"></div>						
+							</td>	
+							<td>
+								<input id="pin_12_btn" type="submit" value="Cambiar" class="alt_btn" style="width: 50%;" onClick="invertValue(12)">
 							</td>					
 						</tr>	
 						<tr>
 							<td>
-								<input type="checkBox">							
+								<div id="inOut_13"></div>							
 							</td>	
 							<td>
 								Pin 13
 							</td>		
 							<td>
-								<div id="pin_13_state"></div>						
+								<div id="pin_13_state"></div>					
 							</td>	
 							<td>
-								<input type="submit" value="Cambiar" class="alt_btn" style="width: 50%;" onClick="">
+								<input id="pin_13_btn" type="submit" value="Cambiar" class="alt_btn" style="width: 50%;" onClick="invertValue(13)">
 							</td>	
-						</tr>	
+						</tr>			
 					</tbody>
 				</table>
 				<div class="clear"></div>
 				</div>
+		</article>
+		<a name="analog_pins"></a>
+		<article class="module width_full">
+			<header><h3>Analog Pin states</h3></header>
+			<div class="module_content">
+				<table class="tablesorter" cellspacing="0">
+					<thead>
+						<tr>
+							<th>Id</th>
+							<th>Valor</th>			
+						</tr>					
+					</thead>
+					<tbody>
+						<tr>
+							<td>
+								Pin 0
+							</td>
+							<td>
+								<div id="analog_0_state"></div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								Pin 1
+							</td>
+							<td>
+								<div id="analog_1_state"></div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								Pin 2
+							</td>
+							<td>
+								<div id="analog_2_state"></div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								Pin 3
+							</td>
+							<td>
+								<div id="analog_3_state"></div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								Pin 4
+							</td>
+							<td>
+								<div id="analog_4_state"></div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								Pin 5
+							</td>
+							<td>
+								<div id="analog_5_state"></div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</article>
 		<div class="spacer"></div>
 	</section>

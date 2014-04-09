@@ -1,21 +1,29 @@
 var conn = null;
+var digitalPins = new Array();
+var inOutPins = new Array();
+var analogPins = new Array();
 
-function connect()
+function loadJSC()
 {
-	if(getId("textInput_ip").value == "" ||	getId("textInput_port").value == "")
+	for(var i = 0; i < 14; i++)
 	{
-		connectionError("Rellene los campos correspondientemente.");
+		setInOutState(i, false);
+		setDigitalPinState(i, false);
 	}
-	else if(isNaN(getId("textInput_port").value))
+	
+	for(var i = 0; i < 6; i++)
 	{
-		connectionError("El puerto debe ser un numero.");
+		setAnalogPinState(i, 0);
 	}
-	else
-	{
-		var port = parseInt(getId("textInput_port").value);
-		var host = "ws://"+getId("textInput_ip").value+":"+port;
+}
+
+function connect(hostVar, portVar)
+{
+	
+		var port = parseInt(portVar);
+		var host = "ws://"+hostVar+":"+port;
 		
-		conn = new WebSocket(host, ['soap', 'xmpp']); 
+		conn = new io.socket(host); 
 		conn.onopen = function(evt) { onOpen(evt) }; 
 		conn.onclose = function(evt) { onClose(evt) }; 
 		conn.onmessage = function(evt) { onMessage(evt) }; 
@@ -43,8 +51,40 @@ function onClose(evt) {
 	if(conn != null)
 		disconnect();
 }  
-function onMessage(evt) { 
-	alert(""+evt.data);
+function onMessage(evt) {
+	var args = (evt.data).toString().split(" ");
+	switch(args[0])
+	{
+	case "set":
+		if(args[1] == "digital")
+		{
+			setDigitalPinState(parseInt(args[2]), parseBool(args[3]));
+			break;
+		}
+		else if(args[1] == "analog")
+		{
+			setAnalogPinState(parseInt(args[2]), parseInt(args[3]));
+			break;
+		}
+	case "digitaltype":
+		if(args[2] == "input")
+		{
+			setInOutState(parseInt(args[1]),true);
+			break;
+		}
+		else if(args[2] == "output")
+		{
+			setInOutState(parseInt(args[1]), false);
+			break;
+		}
+	case "pong":
+		alert("Pong!");
+		break;
+	default:
+		//Data no reconocida
+		alert("Data desconocida.");
+		break;
+	}
 }  
 function onError(evt) {
 	connectionError("Socket obtuvo Error. Es posible que la direccion sea incorrecta.");
@@ -72,7 +112,44 @@ function hideConnectionError()
 	errorMsg.style.display = "none";
 }
 
+function invertValue(id)
+{
+	if(!inOutPins[id])
+		setDigitalPinState(id, !digitalPins[id]);
+}
+
 function getId(id)
 {
 	return document.getElementById(id);
 }
+
+
+function setDigitalPinState(id, state){
+	digitalPins[id] = state;
+	conn.send("set digital "+id+" "+state);
+}
+function setAnalogPinState(id, state){
+	analogPins[id] = state;
+	conn.send("set analog "+id+" "+state);
+}
+function setInOutState(id, state){
+	inOutPins[id] = state;
+	conn.send("set inout "+id+" "+state);
+}
+function getDigitalPinState(id){ return digitalPins[id];}
+function getAnalogPinState(id){ return analogPins[id];}
+function getInOutState(id){ return inOutPins[id];}
+
+
+//EVENTS/////////////////////////////////////
+
+function onChangeValue(id, state)
+{
+	if(state == true || state == false)
+		setDigitalPinState(id, state);
+	else
+		setAnalogPinState(id, state);
+}
+
+//UTIL///////////////////////////////
+

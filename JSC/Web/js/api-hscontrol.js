@@ -3,7 +3,7 @@ var digitalPins = new Array();
 var inOutPins = new Array();
 var analogPins = new Array();
 
-function load()
+function loadJSC()
 {
 	for(var i = 0; i < 14; i++)
 	{
@@ -17,22 +17,13 @@ function load()
 	}
 }
 
-function connect()
+function connect(hostVar, portVar)
 {
-	if(getId("textInput_ip").value == "" ||	getId("textInput_port").value == "")
-	{
-		connectionError("Rellene los campos correspondientemente.");
-	}
-	else if(isNaN(getId("textInput_port").value))
-	{
-		connectionError("El puerto debe ser un numero.");
-	}
-	else
-	{
-		var port = parseInt(getId("textInput_port").value);
-		var host = "ws://"+getId("textInput_ip").value+":"+port;
+	
+		var port = parseInt(portVar);
+		var host = "ws://"+hostVar+":"+port;
 		
-		conn = new WebSocket(host); 
+		conn = new io.socket(host); 
 		conn.onopen = function(evt) { onOpen(evt) }; 
 		conn.onclose = function(evt) { onClose(evt) }; 
 		conn.onmessage = function(evt) { onMessage(evt) }; 
@@ -126,52 +117,30 @@ function invertValue(id)
 	if(!inOutPins[id])
 		setDigitalPinState(id, !digitalPins[id]);
 }
-function setDigital(id, state)
-{
-	conn.send("set digital "+id+" "+state);
-}
 
 function getId(id)
 {
 	return document.getElementById(id);
 }
 
-function setDigitalPinState(id, state)
-{
+
+function setDigitalPinState(id, state){
 	digitalPins[id] = state;
-	if(state == true)
-	{
-		getId("pin_"+id+"_state").style.backgroundColor = "#00ff41";
-		getId("pin_"+id+"_state").innerHTML = "TRUE";
-	}
-	else
-	{
-		getId("pin_"+id+"_state").style.backgroundColor = "#ff0000";
-		getId("pin_"+id+"_state").innerHTML = "FALSE";
-	}
+	conn.send("set digital "+id+" "+state);
 }
-
-function setInOutState(id, state)
-{
-	inOutPins[id] = state
-	if(state == true)
-	{
-		getId("pin_"+id+"_btn").className = "";
-		getId("inOut_"+id).innerHTML = "INPUT";
-	}
-	else
-	{
-		getId("pin_"+id+"_btn").className = "alt_btn";
-		getId("inOut_"+id).innerHTML = "OUTPUT";
-	}
-}
-
-function setAnalogPinState(id, state)
-{
+function setAnalogPinState(id, state){
 	analogPins[id] = state;
-	
-	getId("analog_"+id+"_state").innerHTML = state;
+	conn.send("set analog "+id+" "+state);
 }
+function setInOutState(id, state){
+	inOutPins[id] = state;
+	conn.send("set inout "+id+" "+state);
+}
+function getDigitalPinState(id){ return digitalPins[id];}
+function getAnalogPinState(id){ return analogPins[id];}
+function getInOutState(id){ return inOutPins[id];}
+
+
 //EVENTS/////////////////////////////////////
 
 function onChangeValue(id, state)
@@ -183,7 +152,4 @@ function onChangeValue(id, state)
 }
 
 //UTIL///////////////////////////////
-function parseBool(val)
-{
-	return val == "true";
-}
+
