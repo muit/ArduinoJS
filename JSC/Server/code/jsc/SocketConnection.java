@@ -98,3 +98,32 @@ public class SocketConnection  extends Thread{
             sc.readData();
     }
 }
+
+//WEBSOCKET//
+// https://tyrus.java.net/documentation/1.4/index/websocket-api.html
+/*
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+class socketMessage {
+
+    public socketMessage() {
+    }
+
+    public static void send(String string) throws Exception {
+        System.out.println("Sending message to Socket Server!");
+
+        URL url = new URL("http://<mysite>:8000");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        conn.setDoOutput(true);
+        try (OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream())) {
+            System.out.println("Data Sent!");
+            writer.write(string);
+            writer.flush();
+        }
+        conn.getResponseCode(); // Thanks to BGR
+    }
+}
+*/
