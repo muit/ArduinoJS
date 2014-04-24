@@ -108,14 +108,16 @@ public class Connection {
             System.exit(-1);
         }
     }
-    public String readData(){
+    public Opcode readData(){
         try {
-            StringBuilder strBuf = new StringBuilder();
-            while(input.available()>0) {
-                strBuf.append((char)(input.read()));
-            }
-            return strBuf.toString();
-            
+            final byte[] buffer = new byte[5];
+			int total = 0;
+			int read = 0;
+			while (total < MESSAGE_SIZE && (read = input.read(buffer, total, MESSAGE_SIZE - total)) >= 0) {
+				total += read;
+			}
+			return new Opcode(buffer);
+			
         } catch (IOException e) {
             Util.showError("There was an error while reading Data.");
         }

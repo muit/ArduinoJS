@@ -69,13 +69,15 @@ public class Control {
     {
         
         //INPUTDATA/////////////////////////////////////////////////////////////
-        String inputString = conn.readData();
-        if(inputString != null)
+        Opcode inputPacket = conn.readData();
+        if(inputPacket != null)
         {
+			/*
             if(inputString.charAt(0)=='/')
                 doAction(inputString.substring(1, inputString.length()));
             else
                 Util.showMessage("[Arduino]: "+inputString);
+				*/
         }
         
         
