@@ -6,6 +6,7 @@
 
 package jsc;
 
+import jsc.Serial.Packet;
 import gnu.io.CommPortIdentifier;
 import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
@@ -108,18 +109,19 @@ public class Connection {
             System.exit(-1);
         }
     }
-    public Opcode readData(){
+    
+    public Packet readData(){
+        final byte[] buffer = new byte[5];
+        int MESSAGE_SIZE = 5;
+        int total = 0;
+        int read = 0;
         try {
-            final byte[] buffer = new byte[5];
-			int total = 0;
-			int read = 0;
-			while (total < MESSAGE_SIZE && (read = input.read(buffer, total, MESSAGE_SIZE - total)) >= 0) {
-				total += read;
-			}
-			return new Opcode(buffer);
-			
-        } catch (IOException e) {
-            Util.showError("There was an error while reading Data.");
+            while (total < MESSAGE_SIZE && (read = input.read(buffer, total, MESSAGE_SIZE - total)) >= 0)
+                total += read;
+            
+            return new Packet(buffer);
+        } catch (IOException ex) {
+            Util.showError("Cant read data.");
         }
         return null;
     }

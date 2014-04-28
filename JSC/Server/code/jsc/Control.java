@@ -6,6 +6,7 @@
 
 package jsc;
 
+import jsc.Serial.Listener;
 import java.io.IOException;
 
 /**
@@ -15,6 +16,7 @@ import java.io.IOException;
 public class Control {
     private boolean done = true;
     public Connection conn;
+    private Listener listen;
     public SocketConnection SC;
     public Control()
     {
@@ -51,7 +53,10 @@ public class Control {
         ////////////////////////////////////////////////////////////////////////
         
         Util.showMessage("Conectado.");
-        
+        //FIRST ACTIONS/////////////////////////////////////////////////////////
+        listen = new Listener(conn);
+        listen.start();
+        ////////////////////////////////////////////////////////////////////////
         while(done)
         {
             SC.update();
@@ -65,23 +70,7 @@ public class Control {
         Main.exit(0);
     }
     
-    public void update()
-    {
-        
-        //INPUTDATA/////////////////////////////////////////////////////////////
-        Opcode inputPacket = conn.readData();
-        if(inputPacket != null)
-        {
-			/*
-            if(inputString.charAt(0)=='/')
-                doAction(inputString.substring(1, inputString.length()));
-            else
-                Util.showMessage("[Arduino]: "+inputString);
-				*/
-        }
-        
-        
-    }
+    
     
     public void doAction(String commandMsg)
     {
