@@ -23,22 +23,30 @@ public class Listener extends Thread
     @Override
     public void run()
     {
+	
+		Util.showMessage("Started listening serial.");
         while(true){
-            update();
+            if(!update())
+				break;
         }
+		Util.showMessage("Stoped listening serial.");
     }
     
-    public void update()
+    public boolean update()
     {
         //INPUTDATA/////////////////////////////////////////////////////////////
         Packet inputPacket = conn.readData();
         if(inputPacket != null)
         {
-        		if(inputPacket.getOpCode(0)==(byte) 0xFF)
-            	Util.showMessage("Packet: '"+inputPacket.getOpCode(0)+" "+inputPacket.getOpCode(1)+" "+inputPacket.getOpCode(2)+" "+inputPacket.getOpCode(3)+" "+inputPacket.getOpCode(4)+"'");
-				else   
-					Util.showMessage("Unknown Packet: '"+inputPacket.getOpCode(0)+" "+inputPacket.getOpCode(1)+" "+inputPacket.getOpCode(2)+" "+inputPacket.getOpCode(3)+" "+inputPacket.getOpCode(4)+"'");
-				  
-        }
+			if(inputPacket.getOpCode(0) == Opcode.OP_MAIN_DEFAULT)
+				if(inputPacket.getOpCode(2) == Opcode.OP_WRITE)
+					Util.showMessage("Packet: 'Write in "+(int)inputPacket.getOpCode(1)+" : "+inputPacket.getValue()+"'");
+				else
+					Util.showMessage("Packet: 'Read from "+(int)inputPacket.getOpCode(1)+"'");
+			else   
+				Util.showMessage("Unknown Packet: '"+(int)inputPacket.getOpCode(0)+" "+(int)inputPacket.getOpCode(1)+" "+(int)inputPacket.getOpCode(2)+" "+inputPacket.getValue()+"'"); 
+			return true;
+		}
+		return false;
     }
 }

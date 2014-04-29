@@ -41,7 +41,7 @@ public class Packet {
             case 3:
                 return (byte)(value>>8);
             case 4:
-                return (byte)(value & (int)(0xFF));
+                return (byte)(value & 0xFF);
             default:
                 return 0x00;
         }
