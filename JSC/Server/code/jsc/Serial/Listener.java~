@@ -34,11 +34,7 @@ public class Listener extends Thread
         Packet inputPacket = conn.readData();
         if(inputPacket != null)
         {
-        		if(inputPacket.getOpCode(0)==(byte) 0xFF)
-            	Util.showMessage("Packet: '"+inputPacket.getOpCode(0)+" "+inputPacket.getOpCode(1)+" "+inputPacket.getOpCode(2)+" "+inputPacket.getOpCode(3)+" "+inputPacket.getOpCode(4)+"'");
-				else   
-					Util.showMessage("Unknown Packet: '"+inputPacket.getOpCode(0)+" "+inputPacket.getOpCode(1)+" "+inputPacket.getOpCode(2)+" "+inputPacket.getOpCode(3)+" "+inputPacket.getOpCode(4)+"'");
-				  
+            Util.showMessage("Packet: '"+inputPacket.getOpCode(0)+" "+inputPacket.getOpCode(1)+" "+inputPacket.getOpCode(2)+" "+inputPacket.getOpCode(3)+" "+inputPacket.getOpCode(4)+"'");
         }
     }
 }

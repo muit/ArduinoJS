@@ -60,13 +60,11 @@ public class Control {
         while(done)
         {
             SC.update();
-            /*
             Util.showOut("Ping.");
             conn.sendData("1");
             Util.pause(1000);
             Util.showOut("Pong.");
             conn.sendData("0");
-            */
             Util.pause(1000);
         }
         Main.exit(0);
