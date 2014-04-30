@@ -7,6 +7,8 @@
 package jsc;
 
 import jsc.Serial.Listener;
+import jsc.Socket.SocketConnection;
+
 import java.io.IOException;
 
 /**

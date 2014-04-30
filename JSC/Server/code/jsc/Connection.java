@@ -35,7 +35,7 @@ public class Connection {
         CommPortIdentifier portId = null;
         //BUCLE DE SELECCION DE SERIAL//////////////////////////////////////////
         while(true){
-            Enumeration portEnum = CommPortIdentifier.getPortIdentifiers();
+            Enumeration<?> portEnum = CommPortIdentifier.getPortIdentifiers();
             CommPortIdentifier[] currPortId = new CommPortIdentifier[15];
             Util.showMessage("");
             Util.showMessage("==============================================");

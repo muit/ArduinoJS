@@ -38,8 +38,8 @@ public class Listener extends Thread
         Packet inputPacket = conn.readData();
         if(inputPacket != null)
         {
-			if(inputPacket.getOpCode(0) == Opcode.OP_MAIN_DEFAULT)
-				if(inputPacket.getOpCode(2) == Opcode.OP_WRITE)
+			if(inputPacket.getOpCode(0) == Opcode.OP_MAIN_DEFAULT.getOp())
+				if(inputPacket.getOpCode(2) == Opcode.OP_WRITE.getOp())
 					Util.showMessage("Packet: 'Write in "+(int)inputPacket.getOpCode(1)+" : "+inputPacket.getValue()+"'");
 				else
 					Util.showMessage("Packet: 'Read from "+(int)inputPacket.getOpCode(1)+"'");
