@@ -1,10 +1,23 @@
 console.log("*************\n*CHAT SERVER*\n*************\n*Muit Fos   *\n*************\n");
 var port = 14494;
+
+var sp = require("serialport");
 var io = require("socket.io").listen(port);
+
 var crypto = require('crypto');
 var nicks = [];
 var adminPass = "miguel";
 
+//ListPorts & seleccion///////////////////////////////
+sp.list(function (err, ports) {
+	console.log("Puertos disponibles:");
+	ports.forEach(function(port) {
+		console.log(port.comName+" "+port.pnpId+" "+port.manufacturer);
+	});
+	var selected = readConsole("Escriba el puerto deseado: ");
+	
+});
+//////////////////////////////////////////
 io.set('log level', 1);
 
 console.log("\nEscuchando puerto "+ port);
@@ -96,7 +109,17 @@ function kick(name)
 		if(nicks[i]==name)
 			io.sockets.get(i).disconect();
 }
+function readConsole(message){
+	var ranswer="";
+	var i = rl.createInterface(process.stdin, process.stdout, null);
+	i.question(message, function(answer) {
+		ranswer=answer;
+	i.close();
+	process.stdin.destroy();
 
+	});
+	return ranswer;
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 /*
