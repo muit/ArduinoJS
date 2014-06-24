@@ -1,1 +1,0 @@
-sudo java -Djava.library.path="native/Linux/i686-unknown-linux-gnu" -jar "JavaSerialControl.jar"

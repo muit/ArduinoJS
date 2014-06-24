@@ -1,23 +1,34 @@
 console.log("*************\n*CHAT SERVER*\n*************\n*Muit Fos   *\n*************\n");
+var SC_User = require('./arduino_users.js');
 var port = 14494;
-
-var sp = require("serialport");
 var io = require("socket.io").listen(port);
-
 var crypto = require('crypto');
 var nicks = [];
+//Config////////////
 var adminPass = "miguel";
-
-//ListPorts & seleccion///////////////////////////////
-sp.list(function (err, ports) {
-	console.log("Puertos disponibles:");
-	ports.forEach(function(port) {
-		console.log(port.comName+" "+port.pnpId+" "+port.manufacturer);
-	});
-	var selected = readConsole("Escriba el puerto deseado: ");
-	
-});
-//////////////////////////////////////////
+var arduinoEnabled = true;
+////////////////////
+//Console Manajer///////////
+var sys = require("sys");
+var stdin = process.openStdin();
+var userArduinoList = [];
+////////////////////////////
+stdin.addListener("data", function(d) {
+    // note:  d is an object, and when converted to a string it will
+    // end with a linefeed.  so we (rather crudely) account for that  
+    // with toString() and then substring() 
+	var text = d.toString().substring(0, d.length-1);
+    console.log("you entered: [" + 
+        text + "]");
+	switch(text){
+		case "exit":
+			process.exit(1);
+			break;
+		default:
+			break;
+	}
+  });
+  
 io.set('log level', 1);
 
 console.log("\nEscuchando puerto "+ port);
@@ -31,48 +42,111 @@ io.sockets.on("connection", function(socket) {
     }
     else if(nicks.indexOf(nick)==-1)
     {
-	   console.log("** '"+nick+"' se ha conectado.");
-      nicks.push(nick);
-      io.sockets.emit("nicks", nicks);
+	var sc = new SC_User(nick, socket);
+	console.log("** '"+nick+"' se ha conectado.");
+	nicks.push(nick);
+	io.sockets.emit("nicks", nicks);
 
-      socket.on("msg", function(msg) {
+    socket.on("msg", function(msg) {
+	  
       	deCriptMsg = decript(msg);
+		
+		var digital = new Date();
+		console.log("["+digital.getHours()+":"+digital.getMinutes()+":"+digital.getSeconds()+"] '"+nick+"': "+deCriptMsg);
+			
       	if(deCriptMsg.charAt(0) != "/")
       	{
-		   	var digital = new Date();
-		   	console.log("["+digital.getHours()+":"+digital.getMinutes()+":"+digital.getSeconds()+"] '"+nick+"': "+decript(msg));
 		   	io.sockets.emit("msg", nick, msg);
-		   }
-		else
-		{
+			
+		} else {
+		
 			msg = deCriptMsg.substr(1);
 			var msgArgument = msg.split(" ");
+			
 			switch(msgArgument[0])
 			{
 			case "restart":
 				if(msgArgument[1] == null)
-					socket.emit("report", "Faltan argumentos.");
-							
-				if(msgArgument[1] == adminPass)
-					io.sockets.emit("report", "Reiniciando Servidor.");
-				else
-					socket.emit("report", "Contraseña Incorrecta.");
+					socket.emit("report", "", "Faltan argumentos.");
+				if(msgArgument[1] == adminPass){
+					io.sockets.emit("report", "", "Reiniciando Servidor.");
+					console.log("Reiniciando Servidor.");
+				}else{
+					socket.emit("report", "", "Contraseña Incorrecta.");
+					console.log("Contraseña incorrecta.");
+				}
 				break;
+				
 			case "adminmsg":
-				if(msgArgument[1]== null || msgArgument[2] == null)
-					socket.emit("report", "Faltan argumentos.");
-				else if(msgArgument[1] == adminPass)
-					io.sockets.emit("adminMsg", nick, msgArgument[2]);
-				else
-					socket.emit("report", "Contraseña Incorrecta.");
+				if(msgArgument[1]== null || msgArgument[2] == null){
+					socket.emit("report", "", "Faltan argumentos.");
+					console.log("Faltan argumentos.");
+					break;
+				}
+				if(msgArgument[1] == adminPass){
+					io.sockets.emit("adminmsg", nick, encript(msgArgument[2]));
+					console.log("[AdminMsg]: " + msgArgument[2]);
+				}else{
+					socket.emit("report", "", "Contraseña Incorrecta.");
+					console.log("Contraseña incorrecta.");
+				}
 				break;
+				
 			case "kick":
 				if(msgArgument[1]== null)
 					break;
-				kick(msgArgument[1]);
+				if(msgArgument[1]== "help"){
+					socket.emit("report", "", "Uso del comando kick: /kick nick contraseña");
+					break;
+				}
+				if(msgArgument[2] == adminPass){
+					kick(msgArgument[1]);
+					io.sockets.emit("report", "", msgArgument[1]+" fue expulsado.");
+					console.log(msgArgument[1]+" fue expulsado.");
+				}else{
+					socket.emit("report", "", "Contraseña Incorrecta.");
+					console.log("Contraseña Incorrecta.");
+				}
+				break;
+				
+			case "arduino":
+				if(msgArgument[1]== null)
+					break;
+					
+				switch(msgArgument[1]){
+					case "read":
+						if(msgArgument[2]=="on"){
+							if(SC_User.sc_users.indexOf(sc)==-1){
+								socket.emit("report", "", "Arduino: Iniciada Lectura de Datos.");
+								sc.entra();
+								console.log("[Arduino] Iniciada Lectura de Datos.");
+							}
+							else{
+								socket.emit("report", "", "Arduino: Lectura de Datos ya estaba iniciada.");
+								console.log("[Arduino] Lectura de Datos ya estaba iniciada.");
+								}
+						}
+						else if(msgArgument[2]=="off"){
+							if(SC_User.sc_users.indexOf(sc)!=-1){
+								socket.emit("report", "", "Arduino: Detenida Lectura de Datos.");
+								
+								sc.sale();
+								console.log("[Arduino] Lectura de Datos detenida.");
+							}else{
+								socket.emit("report", "", "Arduino: Lectura de Datos no estaba iniciada.");
+								console.log("[Arduino] Lectura de Datos no estaba iniciada.");
+							}
+						}
+						break;
+						
+					case "send":
+						parse_str_to_ARD(msgArgument[2]);
+						console.log("Arduino recibio: "+msgArgument[2]);
+						break;
+				}
 				break;
 			default:
-				socket.emit("report", "Ese comando no existe.");
+				socket.emit("report", "", "Ese comando no existe.");
 				break;	
 			}		
 		}
@@ -93,6 +167,7 @@ io.sockets.on("connection", function(socket) {
   });
 });
 
+
 function encript(text)
 {
     return CryptoJS.Rabbit.encrypt(text, "hUY76gsd34UY");
@@ -105,20 +180,149 @@ function decript(cypth)
 
 function kick(name)
 {
-	for(var i=0; i<io.sockets.size(); i++)
+	for(var i=0; i<io.sockets.clients().length; i++)
 		if(nicks[i]==name)
-			io.sockets.get(i).disconect();
+			io.sockets.clients()[i].disconnect();
 }
-function readConsole(message){
-	var ranswer="";
-	var i = rl.createInterface(process.stdin, process.stdout, null);
-	i.question(message, function(answer) {
-		ranswer=answer;
-	i.close();
-	process.stdin.destroy();
 
+
+//////////////////////////////////////////////////////////////
+//Arduino Conection/////
+if(arduinoEnabled){
+var serialport = require("serialport");
+var SerialPort = serialport.SerialPort;
+
+serialport.on('error', function(err) {
+	console.log("ERROR: "+err);
+});
+
+serialport.on('open', function(err) {
+	console.log('callback OPEN!!!');
+});
+
+var sp_arduino = null;
+var portName=null;
+
+// Acciones tras el arranque....
+console.log('Conectado y listo!!!');
+// Puertos disponibles:
+console.log('Puertos disponibles...');
+listar_Puertos();
+conectar_arduino();
+}
+function listar_Puertos() {
+	serialport.list(function(err, ports) {
+		var n = 1;
+		console.log(ports);
 	});
-	return ranswer;
+}
+
+
+//PARSER:
+var cnt_byte=0; // contador de bytes en el buffer de comando
+var buff_com = new Array(16); // array para recoger comando.
+var SZ_COMMAND=5;
+
+function parsebin_to_ARD(data){
+	return;
+}
+
+
+var cnt_ch=0; // contador de chars en el string de comando
+var str_com = ""; // string para recoger comando.
+
+function parse_str_to_ARD(data) {
+	var c;
+	// consumo de los datos recibidos:
+	for (var i = 0; i < data.length; i++) {
+		c = data.charAt(i);
+		if (cnt_ch === 0 && (c !== 'F') ) {
+			console.log('ig: '+ c);
+			continue; // ignorar el byte
+		}
+		str_com += c;
+		cnt_ch++;
+		console.log('almacenando: '+ c);
+		if (cnt_ch === SZ_COMMAND) {
+			cnt_ch = 0;
+			// ejecuta comando:		
+			var v = str_com.slice();
+			str_com="";
+			// Enviar al arduino.
+			sp_arduino.write(v);
+			console.log('al Arduino...: ' + v);
+			break;
+		}
+	}
+	return;
+}
+
+
+function parser_from_ARD(data) {
+	var c, ret;
+	// consumo de los datos recibidos:
+	for (var i = 0; i < data.length; i++) {
+		c = data[i];
+		if (cnt_byte === 0 && c !== "F".charCodeAt(0)) {
+			// console.log('Ig.'+c);
+			continue; // ignorar el byte
+		}
+		buff_com[cnt_byte++] = c;
+		// console.log('almacenando: '+ c);
+		if (cnt_byte === SZ_COMMAND) {
+			cnt_byte = 0;
+			// ejecuta comando:
+			var v = buff_com.slice();
+			v.length = SZ_COMMAND;
+			for (var i = 0; i<SC_User.sc_users.length; i++)
+				SC_User.sc_users[i].send(v);
+			console.log('mandando: ' + v);
+			break;
+		}
+	}
+	return;
+}
+
+function ejecuta_ARD(v) {
+	// Identifica variable,
+	// recupera valor y lo envia a los usuarios 
+	// conectados que correspondan. 
+	// TODO: 
+	// Se lo mandamos a todos los usuarios conectados.
+	
+	console.log('recibido comando: '+ v);
+	// acceso a usuarios conectados:
+	console.log('usuarios '+ SC_User.sc_users);
+	for (var a in SC_User.sc_users) {
+		if (a!==null) { console.log(id);}
+	}
+}
+
+
+function conectar_arduino() {
+	serialport.list(function(err, ports) {
+		if (ports.length !== 0) {
+			portName = ports[0].comName;
+			console.log('usando puerto: ' + portName);
+			// ------
+			sp_arduino = new SerialPort(portName, {
+				baudRate : 9600,
+				dataBits : 8,
+				parity : 'none',
+				stopBits : 1
+			});
+
+			sp_arduino.on('open', function(err) {
+				console.log('abriendo puerto : ' + portName);
+			});
+
+			sp_arduino.on('data', parser_from_ARD);
+			sp_arduino.on('exec_com_ARD', ejecuta_ARD);
+
+		} else {
+			console.log('Conecte el arduino, por favor!');
+		}
+	});
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
