@@ -1,13 +1,16 @@
+//Config////////////
+var adminPass = "password1234";
+var arduinoEnabled = true;
+////////////////////
+
+
+
 console.log("*************\n*CHAT SERVER*\n*************\n*Muit Fos   *\n*************\n");
 var SC_User = require('./arduino_users.js');
 var port = 14494;
 var io = require("socket.io").listen(port);
 var crypto = require('crypto');
 var nicks = [];
-//Config////////////
-var adminPass = "miguel";
-var arduinoEnabled = true;
-////////////////////
 //Console Manajer///////////
 var sys = require("sys");
 var stdin = process.openStdin();
