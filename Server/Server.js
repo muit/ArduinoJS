@@ -5,7 +5,7 @@ var arduinoEnabled = true;
 
 
 
-console.log("*************\n*CHAT SERVER*\n*************\n*Muit Fos   *\n*************\n");
+console.log("******************\n*  CHAT  SERVER  *\n******************\n*Miguel Fernandez*\n******************\n");
 var SC_User = require('./arduino_users.js');
 var port = 14494;
 var io = require("socket.io").listen(port);
@@ -171,49 +171,51 @@ io.sockets.on("connection", function(socket) {
 });
 
 
-function encript(text)
+var encript = function(text)
 {
     return CryptoJS.Rabbit.encrypt(text, "hUY76gsd34UY");
 }
 
-function decript(cypth)
+var decript = function(cypth)
 {
     return (CryptoJS.Rabbit.decrypt(cypth, "hUY76gsd34UY")).toString(CryptoJS.enc.Utf8);
 }
 
-function kick(name)
+var kick = function(name)
 {
 	for(var i=0; i<io.sockets.clients().length; i++)
 		if(nicks[i]==name)
 			io.sockets.clients()[i].disconnect();
 }
 
-
 //////////////////////////////////////////////////////////////
 //Arduino Conection/////
-if(arduinoEnabled){
-var serialport = require("serialport");
-var SerialPort = serialport.SerialPort;
+var startArduino = function(){
+	if(arduinoEnabled){
+		var serialport = require("serialport");
+		var SerialPort = serialport.SerialPort;
 
-serialport.on('error', function(err) {
-	console.log("ERROR: "+err);
-});
+		serialport.on('error', function(err) {
+			console.log("ERROR: "+err);
+		});
 
-serialport.on('open', function(err) {
-	console.log('callback OPEN!!!');
-});
+		serialport.on('open', function(err) {
+			console.log('callback OPEN!!!');
+		});
 
-var sp_arduino = null;
-var portName=null;
+		var sp_arduino = null;
+		var portName=null;
 
-// Acciones tras el arranque....
-console.log('Conectado y listo!!!');
-// Puertos disponibles:
-console.log('Puertos disponibles...');
-listar_Puertos();
-conectar_arduino();
+		// Acciones tras el arranque....
+		console.log('Conectado y listo!!!');
+		// Puertos disponibles:
+		console.log('Puertos disponibles...');
+		listar_Puertos();
+		conectar_arduino();
+	}
 }
-function listar_Puertos() {
+
+var listar_Puertos = function() {
 	serialport.list(function(err, ports) {
 		var n = 1;
 		console.log(ports);
@@ -328,6 +330,7 @@ function conectar_arduino() {
 	});
 }
 
+startArduino();
 ///////////////////////////////////////////////////////////////////////////////////////////////
 /*
 CryptoJS v3.1.2
