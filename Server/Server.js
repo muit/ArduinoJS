@@ -54,7 +54,7 @@ var Chat = {
 		    {
 			var sc = new SC_User(nick, socket);
 			console.log("** '"+nick+"' is now connected.");
-			nicks.push(nick);
+			_self.nicks.push(nick);
 			_self.io.sockets.emit("nicks", _self.nicks);
 
 		    socket.on("msg", function(msg) {
