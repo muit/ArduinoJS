@@ -50,12 +50,12 @@ var Chat = {
 		    {
 		      socket.emit("report", "An error ocurred.");
 		    }
-		    else if(nicks.indexOf(nick)==-1)
+		    else if(_self.nicks.indexOf(nick)==-1)
 		    {
 			var sc = new SC_User(nick, socket);
 			console.log("** '"+nick+"' is now connected.");
 			nicks.push(nick);
-			_self.io.sockets.emit("nicks", nicks);
+			_self.io.sockets.emit("nicks", _self.nicks);
 
 		    socket.on("msg", function(msg) {
 			  
@@ -67,7 +67,7 @@ var Chat = {
 		      	if(decriptMsg.charAt(0) != "/")
 				   	_self.io.sockets.emit("msg", nick, msg);
 				else {
-					msg = decriptMsg.substr(1);
+					msg = _self.decriptMsg.substr(1);
 					var msgArgument = msg.split(" ");
 					
 					switch(msgArgument[0])
@@ -168,8 +168,8 @@ var Chat = {
 		    }
 		    else
 		    {
-		      console.log("** '"+nick+"' exists. Refused conection.");
-		      socket.emit("report", "That nick exists.");
+		      console.log("** '"+nick+"' exists. Conection Refused.");
+		      socket.emit("report", "That nick already exists.");
 		      socket.emit("action", "repeatNick");
 		    }
 		  });
