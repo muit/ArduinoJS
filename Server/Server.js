@@ -67,7 +67,7 @@ var Chat = {
 		      	if(decriptMsg.charAt(0) != "/")
 				   	_self.io.sockets.emit("msg", nick, msg);
 				else {
-					msg = _self.decriptMsg.substr(1);
+					msg = decriptMsg.substr(1);
 					var msgArgument = msg.split(" ");
 					
 					switch(msgArgument[0])
@@ -120,6 +120,10 @@ var Chat = {
 					case "arduino":
 						if(msgArgument[1]== null)
 							break;
+						if(!_self.Config.arduinoEnabled){
+							socket.emit("report", "", "Arduino no esta activado.");
+							break;
+						}
 							
 						switch(msgArgument[1]){
 							case "read":
@@ -149,7 +153,7 @@ var Chat = {
 								
 							case "send":
 								Arduino.Parser.strToArd(msgArgument[2]);
-								console.log("Arduino recibio: "+msgArgument[2]);
+								console.log("Arduino recibio: "+ msgArgument[2]);
 								break;
 						}
 						break;
