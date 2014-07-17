@@ -42,6 +42,8 @@ var Chat = {
 
 		console.log("\nListening port "+ port);
 
+		var _self = this;
+
 		this.io.sockets.on("connection", function(socket) {
 		  socket.on("nick", function(nick) {
 		    if(nick==null)
@@ -53,17 +55,17 @@ var Chat = {
 			var sc = new SC_User(nick, socket);
 			console.log("** '"+nick+"' is now connected.");
 			nicks.push(nick);
-			this.io.sockets.emit("nicks", nicks);
+			_self.io.sockets.emit("nicks", nicks);
 
 		    socket.on("msg", function(msg) {
 			  
-		      	decriptMsg = this.decript(msg);
+		      	decriptMsg = _self.decript(msg);
 				
 				var digital = new Date();
 				console.log("["+digital.getHours()+":"+digital.getMinutes()+":"+digital.getSeconds()+"] '"+nick+"': "+decriptMsg);
 					
 		      	if(decriptMsg.charAt(0) != "/")
-				   	this.io.sockets.emit("msg", nick, msg);
+				   	_self.io.sockets.emit("msg", nick, msg);
 				else {
 					msg = decriptMsg.substr(1);
 					var msgArgument = msg.split(" ");
@@ -74,8 +76,8 @@ var Chat = {
 						if(msgArgument[1] == null)
 							socket.emit("report", "", "Not enough arguments.");
 							console.log("Not enough arguments.");
-						if(msgArgument[1] == this.Config.adminPass){
-							this.io.sockets.emit("report", "", "Restarting server.");
+						if(msgArgument[1] == _self.Config.adminPass){
+							_self.io.sockets.emit("report", "", "Restarting server.");
 							console.log("Restarting server.");
 						}else{
 							socket.emit("report", "", "Wrong password.");
@@ -89,8 +91,8 @@ var Chat = {
 							console.log("Not enough arguments.");
 							break;
 						}
-						if(msgArgument[1] == this.Config.adminPass){
-							this.io.sockets.emit("adminmsg", nick, this.encript(msgArgument[2]));
+						if(msgArgument[1] == _self.Config.adminPass){
+							_self.io.sockets.emit("adminmsg", nick, _self.encript(msgArgument[2]));
 							console.log("[AdminMsg]: " + msgArgument[2]);
 						}else{
 							socket.emit("report", "", "Wrong password.");
@@ -105,9 +107,9 @@ var Chat = {
 							socket.emit("report", "", "Estructure of the command kick: /kick 'nick' 'password'");
 							break;
 						}
-						if(msgArgument[2] == this.Config.adminPass){
-							this.kick(msgArgument[1]);
-							this.io.sockets.emit("report", "", msgArgument[1]+" was kicked.");
+						if(msgArgument[2] == _self.Config.adminPass){
+							_self.kick(msgArgument[1]);
+							_self.io.sockets.emit("report", "", msgArgument[1]+" was kicked.");
 							console.log(msgArgument[1]+" was kicked.");
 						}else{
 							socket.emit("report", "", "Wrong password.");
@@ -161,7 +163,7 @@ var Chat = {
 		      socket.on("disconnect", function() {
 			      console.log("** '"+nick+"' se ha desconectado.");
 		          nicks.splice(nicks.indexOf(nick), 1);
-		          this.io.sockets.emit("nicks", nicks);
+		          _self.io.sockets.emit("nicks", nicks);
 		      });
 		    }
 		    else
@@ -187,7 +189,7 @@ var Chat = {
 
 	kick: function(name)
 	{
-		for(var i=0; i<io.sockets.clients().length; i++)
+		for(var i=0; i<this.io.sockets.clients().length; i++)
 			if(nicks[i]==name)
 				this.io.sockets.clients()[i].disconnect();
 	},
