@@ -17,7 +17,6 @@ var Chat = {
 		console.log("******************\n*  CHAT  SERVER  *\n******************\n*Miguel Fernandez*\n******************\n");
 		var port = 14494;
 		this.io = require("socket.io").listen(port);
-		console.log(this.io);
 		this.crypto = require('crypto');
 		//Console Manajer///////////
 		this.sys = require("sys");
@@ -25,7 +24,7 @@ var Chat = {
 		var userArduinoList = [];
 		////////////////////////////
 
-		stdin.addListener("data", function(d) {
+		this.stdin.addListener("data", function(d) {
 			// Console control.
 			var text = d.toString().substring(0, d.length-1);
 		    console.log("You entered: [" + text + "]");
@@ -38,11 +37,11 @@ var Chat = {
 			}
 		});
 		  
-		io.set('log level', 1);
+		this.io.set('log level', 1);
 
 		console.log("\nListening port "+ port);
 
-		io.sockets.on("connection", function(socket) {
+		this.io.sockets.on("connection", function(socket) {
 		  socket.on("nick", function(nick) {
 		    if(nick==null)
 		    {
