@@ -188,21 +188,21 @@ var Chat = {
 	//////////////////////////////////////////////////////////////
 	//Arduino/////
 	Arduino: {
+		serialport: undefined,
+		SerialPort: undefined,
+
 		start: function(){
 			if(Chat.Config.arduinoEnabled){
-				var serialport = require("serialport");
-				var SerialPort = serialport.SerialPort;
+				this.serialport = require("serialport");
+				this.SerialPort = this.serialport.SerialPort;
 
-				serialport.on('error', function(err) {
+				this.serialport.on('error', function(err) {
 					console.log("ERROR: "+err);
 				});
 
-				serialport.on('open', function(err) {
+				this.serialport.on('open', function(err) {
 					console.log('callback OPEN!!!');
 				});
-
-				var sp_arduino = null;
-				var portName=null;
 
 				// Acciones tras el arranque....
 				console.log('Conected & Ready!!!');
@@ -215,31 +215,35 @@ var Chat = {
 		},
 
 		showPorts: function() {
-			serialport.list(function(err, ports) {
+			this.serialport.list(function(err, ports) {
 				var n = 1;
 				console.log(ports);
 			});
 		},
 
 		conect: function(){
-			serialport.list(function(err, ports) {
+
+			var sp_arduino = undefined;
+			var portName = undefined;
+
+			this.serialport.list(function(err, ports) {
 				if (ports.length !== 0) {
-					portName = ports[0].comName;
+					this.portName = ports[0].comName;
 					console.log('usando puerto: ' + portName);
 					// ------
-					sp_arduino = new SerialPort(portName, {
+					this.sp_arduino = new this.SerialPort(portName, {
 						baudRate : 9600,
 						dataBits : 8,
 						parity : 'none',
 						stopBits : 1
 					});
 
-					sp_arduino.on('open', function(err) {
+					this.sp_arduino.on('open', function(err) {
 						console.log('Opening port : ' + portName);
 					});
 
-					sp_arduino.on('data', this.Parser.fromArd);
-					sp_arduino.on('exec_com_ARD', this.execute);
+					this.sp_arduino.on('data', this.Parser.fromArd);
+					this.sp_arduino.on('exec_com_ARD', this.execute);
 
 				} else {
 					console.log('Please, conect Arduino!');
