@@ -1,3 +1,5 @@
+SC_User = require('./arduino_users.js');
+
 var Chat = {
 	//Config////////////
 	Config: {
@@ -10,7 +12,6 @@ var Chat = {
 	sys: undefined,
 	stdin: undefined,
 	nicks: [],
-	SC_User: require('./arduino_users.js'),
 
 	////////////////////
 	start: function(){
