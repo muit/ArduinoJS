@@ -2,27 +2,33 @@ var Chat = {
 	//Config////////////
 	Config: {
 		adminPass: "password1234",
-		arduinoEnabled: true,
+		arduinoEnabled: false,
 	},
+
+	io: undefined,
+	crypto: undefined,
+	sys: undefined,
+	stdin: undefined,
+	nicks: [],
+	SC_User: require('./arduino_users.js'),
+
 	////////////////////
 	start: function(){
 		console.log("******************\n*  CHAT  SERVER  *\n******************\n*Miguel Fernandez*\n******************\n");
-		var SC_User = require('./arduino_users.js');
 		var port = 14494;
-		var io = require("socket.io").listen(port);
-		var crypto = require('crypto');
-		var nicks = [];
+		this.io = require("socket.io").listen(port);
+		console.log(this.io);
+		this.crypto = require('crypto');
 		//Console Manajer///////////
-		var sys = require("sys");
-		var stdin = process.openStdin();
+		this.sys = require("sys");
+		this.stdin = process.openStdin();
 		var userArduinoList = [];
 		////////////////////////////
 
 		stdin.addListener("data", function(d) {
 			// Console control.
 			var text = d.toString().substring(0, d.length-1);
-		    console.log("You entered: [" + 
-		        text + "]");
+		    console.log("You entered: [" + text + "]");
 			switch(text){
 				case "exit":
 					process.exit(1);
