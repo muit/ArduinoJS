@@ -195,7 +195,7 @@ var Chat = {
 
 //////////////////////////////////////////////////////////////
 //Arduino/////
-Arduino: {
+var Arduino = {
 	serialport: undefined,
 	SerialPort: undefined,
 
