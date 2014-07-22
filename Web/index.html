@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="description" content="Slugin Web Chat service">
-  <meta name="author" content="miguel" >
-  <meta charset="UTF-8">
-  <link rel="stylesheet" type="text/css" href="Chat.css" />
+    <meta name="description" content="Slugin Web Chat service">
+	<meta name="author" content="miguel" >
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="Chat.css" />
+	<script type="text/javascript" src="socket.io/socket.io.js"></script>
+	<script type="text/javascript" src="js/jquery-2.1.0.js"></script>
+	<script type="text/javascript" src="js/Chat.js"></script>
 </head>
 <body>
 	<div id="header"></div>
@@ -34,9 +37,5 @@
 	</div>
 	
 	<div id="footer"></div>
-
-	<script type="text/javascript" src="socket.io/socket.io.js"></script>
-	<script type="text/javascript" src="js/jquery-2.1.0.js"></script>
-	<script type="text/javascript" src="js/Chat.js"></script>
 </body>
 </html>
